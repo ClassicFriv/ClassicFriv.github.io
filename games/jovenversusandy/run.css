@@ -1,0 +1,53 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+}
+
+#game-container {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 20px;
+}
+
+#game-title {
+    color: #333;
+}
+
+#player-choice {
+    margin-bottom: 20px;
+}
+
+#player-choice button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    cursor: pointer;
+}
+
+#game-info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#game-info > div {
+    flex: 1;
+    margin: 0 10px;
+}
+
+#result-screen {
+    margin-top: 50px;
+}
+
+#result-text {
+    color: #333;
+}
+
+/* Blue background for Andy, Red background for Joven */
+#andy {
+    background-color: #add8e6;
+}
+
+#joven {
+    background-color: #ffcccc;
+}
