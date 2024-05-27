@@ -3,34 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ongoing</title>
-    <link rel="stylesheet" href="run.css">
+    <title>Game Interface</title>
+    <style>
+        #player-choice, #result-screen {
+            display: none;
+        }
+        #andy-moves, #joven-moves {
+            cursor: pointer;
+            list-style-type: none;
+        }
+        li:focus {
+            outline: 2px solid blue;
+        }
+    </style>
 </head>
 <body>
-    <div id="game-container">
-        <h1 id="game-title">Ongoing</h1>
-        <div id="player-choice">
-            <button id="andy-btn" onclick="choosePlayer('Andy')">Play as Andy</button>
-            <button id="joven-btn" onclick="choosePlayer('Joven')">Play as Joven</button>
-        </div>
-        <div id="game-info">
-            <div id="andy">
-                <h2>Andy's Moves</h2>
-                <ul id="andy-moves">
-                    <!-- Andy's moves will be added here dynamically -->
-                </ul>
-            </div>
-            <div id="joven">
-                <h2>Joven's Moves</h2>
-                <ul id="joven-moves">
-                    <!-- Joven's moves will be added here dynamically -->
-                </ul>
-            </div>
-        </div>
-        <div id="result-screen" style="display: none;">
-            <h1 id="result-text"></h1>
-        </div>
+    <h1 id="game-title">Choose Your Player</h1>
+    <div id="player-choice">
+        <button onclick="choosePlayer('Andy')">Andy</button>
+        <button onclick="choosePlayer('Joven')">Joven</button>
     </div>
-    <script src="run.js"></script>
+    <ul id="andy-moves" tabindex="0"></ul>
+    <ul id="joven-moves" tabindex="0"></ul>
+    <div id="result-screen">
+        <p id="result-text"></p>
+    </div>
+    <script>
+        // Moves and their corresponding damage
+        const moves = {
+            "Andy": {
+                "The Spinning Incident": 30,
+                "The 'Morey' Incident": 20,
+                "The 'Insoluble' Incident": 25,
+                "Telescope": 35
+            },
+            "Joven": {
+                "The Wednesday Incident": 25,
+                "Diabetus": 40
+            }
+        };
+
+        let currentPlayer;
+        let currentHP = {
+            "Andy": 200,
+            "Joven": 200
+        };
+
+        // Function to choose player and start the game
+        function choosePlayer(player) {
+            currentPlayer = player;
+            updateMoves();
+            document.getElementById('player-choice').style.display = 'none';
+            document.getElementById('game-title').innerText = `Choose a move for ${player}`;
+        }
+
+        // Function to update moves based on the chosen player
+        function updateMoves() {
+            const moveList = currentPlayer === "Andy" ? moves.Andy : moves.Joven;
+            const moveContainer = currentPlayer === "Andy" ? document.getElementById('andy-moves') : document.getElementById('joven-moves');
+            moveContainer.innerHTML = "";
+            for (const move in moveList) {
+                const moveElement = document.createElement('li');
+                moveElement.textContent = move;
+                moveElement.tabIndex = 0;
+                moveElement.setAttribute('role', 'button');
+                moveElement.setAttribute('aria-label', `Perform move ${move}`);
+                moveElement.onclick = () => performMove(move);
+                moveElement.onkeypress = (event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                        performMove(move);
+                    }
+                };
+                moveContainer.appendChild(moveElement);
+            }
+        }
+
+        // Function to perform a move
+        function performMove(move) {
+            const damage = moves[currentPlayer][move];
+            currentHP[currentPlayer === "Andy" ? "Joven" : "Andy"] -= damage;
+            checkGameStatus();
+        }
+
+        // Function to check game status
+        function checkGameStatus() {
+            if (currentHP.Andy <= 0) {
+                endGame("Joven");
+            } else if (currentHP.Joven <= 0) {
+                endGame("Andy");
+            }
+        }
+
+        // Function to end the game
+        function endGame(winner) {
+            document.getElementById('game-title').innerText = `${winner} is the winner!`;
+            document.getElementById('result-screen').style.display = 'block';
+            document.getElementById('result-text').innerText = `${winner} is the winner!`;
+            document.body.style.backgroundColor = winner === "Andy" ? "#add8e6" : "#ffcccc";
+        }
+
+        // Timer to change background color every 8 seconds
+        setInterval(() => {
+            document.body.style.backgroundColor = document.body.style.backgroundColor === "#add8e6" ? "#ffcccc" : "#add8e6";
+        }, 8000);
+    </script>
 </body>
 </html>
